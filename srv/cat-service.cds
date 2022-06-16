@@ -1,25 +1,11 @@
-using { Country, managed } from '@sap/cds/common';
 
-service CatalogService {
+using { sap.capire.bookshop as my } from '../db/schema';
+service CatalogService @(path:'/browse') {
 
-  entity Books {
-    key ID : Integer;
-    title  : localized String;
-    author : Association to Authors;
-    stock  : Integer;
-  }
+  @readonly entity Books as SELECT from my.Books {*,
+    author.name as author
+  } excluding { createdBy, modifiedBy };
 
-  entity Authors {
-    key ID : Integer;
-    name   : String;
-    books  : Association to many Books on books.author = $self;
-  }
-
-  entity Orders : managed {
-    key ID  : UUID;
-    book    : Association to Books;
-    country : Country;
-    amount  : Integer;
-  }
-
+  @requires: 'authenticated-user'
+  action submitOrder (book: Books:ID, quantity: Integer);
 }

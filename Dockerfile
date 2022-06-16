@@ -1,16 +1,22 @@
-FROM node:14-alpine
 
-# use productive environment
-ENV NODE_ENV production
 
-# copy source as node user
-WORKDIR /cpapp
-COPY --chown=node:node . .
 
-# install dependencies
-RUN npm ci --only=production
 
-# run app as node user
-EXPOSE 4004
-USER node
-CMD ["npm", "start"]
+#노드버전
+FROM node:16-alpine
+
+#폴더생성
+WORKDIR /usr/app
+
+#CAP 프로젝트 생성시 필요한 라이브러리
+RUN npm i -g @sap/cds-dk
+
+#프로젝트생성
+RUN cds init
+
+#파일 복제
+COPY srv/cat-service.cds /usr/app/srv
+COPY srv/cat-service.js /usr/app/srv
+
+#실행
+CMD ["cds", "run"]

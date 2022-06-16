@@ -1,5 +1,6 @@
 module.exports = (srv) => {
-
+    let foo = "bar";
+    console.log(foo);
     // Reply mock data for Books...
     srv.on ('READ', 'Books', ()=>[
       { ID:201, title:'Wuthering Heights', author_ID:101, stock:12 },
